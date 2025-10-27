@@ -1,15 +1,16 @@
 resource "aws_instance" "first_terra" {
-  count = 3 
+  count = 3
   ami           = "ami-09c813fb71547fc4f"
-  instance_type = var.environment[count.index]                                #loop will run for 3 times by getting variable names from variable.tf
+  instance_type = var.instances_type[count.index]                                #loop will run for 3 times by getting variable names from variable.tf
   vpc_security_group_ids = [aws_security_group.allow-all.id]
   tags = {
-    Name = "terraform"
+    Name = var.instances_name[count.index]
+    Environment = "dev"
 
   }
 }
 resource "aws_security_group" "allow-all" {
-  name   = "allow-terra"
+  name   = "allow-multi"
   
   egress {
     from_port       = 0 # from port 0 to port 0 means to all ports
@@ -25,7 +26,7 @@ resource "aws_security_group" "allow-all" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "terra_sg"
+    Name = "sg-multi"
   }
 }
 
